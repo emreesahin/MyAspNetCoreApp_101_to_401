@@ -1,0 +1,18 @@
+﻿@model VisitorViewModel 
+
+<div>
+<form>
+  <div class="form-floating mb-3 m-5">
+    <label asp-for="Name" class="form-label">İsim</label>
+    <input class="form-control" asp-for="Name">
+    <div />
+    
+ <div class="form-floating mb-3">
+  <textarea asp-for="Comment" class="form-control" placeholder="Ürün Açıklama" style="height: 100px"></textarea>
+  <label asp-for="Comment">Ürün Açıklama</label>
+</div>
+
+  <button type="submit" class="btn btn-primary">Kaydet</button>
+</form>
+</div>
+

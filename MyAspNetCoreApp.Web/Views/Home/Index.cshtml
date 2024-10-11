@@ -1,71 +1,36 @@
-﻿@{
+﻿ ﻿@{
     ViewData["Title"] = "Home Page";
-    var alert = "bu bir uyari mesajidir";
-}
 
+
+}
+@section Css
+{
+
+    <style>
+
+    </style>
+
+}
 @section Scripts
 {
-    <script type="text/javascript">
-    // alert("Sayfamiza Hos geldin")    
-        $(document).ready(function(){
-            console.log("Sayfamiza hos geldin")
-        })
-    </script>
+
+
+
 }
+<div class="row">
+    <div class="col-md-4">
+        <partial name="~/PartialViews/_ProductListPartialView.cshtml" model="@ViewBag.productListPartialViewModel" />
 
-@section Css 
-{
-         <link rel="stylesheet" href="~/css/example.css" asp-append-version="true" />
-   <style>
-       h1
-       {
-            color: red;
-            background-color: blue;
-       }
-
-   </style>
-}
-
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <h2>Merhaba</h2>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
-
-
-@* <div>@DateTime.Now.ToShortDateString() </div>
-
-@{
-    var message = "merhaba";
-    var datetime = DateTime.Now.ToShortDateString();
-
-    @: bugunun tarihi : @datetime
-
-    <div>mesaj: @message </div>
-    <text>Bugunun tarihi : @datetime </text>
-} *@
-
-@* 
-@if (1 == 1)
-{
-    <p>Dogru</p>
-}    
-else if (DateTime.IsLeapYear(DateTime.Now.Year))
-{
-    <h1>@alert</h1>
-    <p>artik yil</p>
-}
-else
-{
-    <p>Yanlis</p>
-}
-
-@for (var i = 0; i < 10; i++)
-{
-    <p>@i</p>
-}
-
-@foreach (var item in Enumerable.Range(1,10).ToList())
-{
+    </div>
     
-} *@
+    <div class ="col-md-4">
+
+        @* 1. Yol *@ 
+     @*    @await Component.InvokeAsync("ProductList" , new {type = 1}) *@
+
+     @* 2. Yol *@
+        <vc:product-list type="1"></vc:product-list>
+
+  
+
+ 

@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using MyAspNetCoreApp.Web.Helpers;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using MyAspNetCoreApp.Web.Models;
+using MyAspNetCoreApp.Web.ViewModels;
 
 namespace MyAspNetCoreApp.Web.Controllers
 {
@@ -8,18 +10,19 @@ namespace MyAspNetCoreApp.Web.Controllers
     {
 
         private AppDbContext _context;
-        private IHelper _helper;
 
+        private readonly IMapper _mapper;
         private readonly ProductRepository _productRepository;
 
-        public ProductController(AppDbContext context, IHelper helper)
+        public ProductController(AppDbContext context, IMapper mapper)
         {
 
             //DI Container
             _productRepository = new ProductRepository();
 
             _context = context;
-            _helper = helper;
+            _mapper = mapper;
+
 
             //if (!_context.Products.Any()) {
             //    _context.Products.Add(new Product { Name = "Kalem 1", Price = 100, Stock = 100, Color ="Red"});
@@ -29,16 +32,12 @@ namespace MyAspNetCoreApp.Web.Controllers
             //    _context.SaveChanges();
             //}
         }
-        
-        public IActionResult Index([FromServices]IHelper helper2)
-        {
-            var text = "Asp.Net";
-            var upperText = _helper.Upper(text);
-            var status = _helper.Equals(helper2);
 
-            
+        public IActionResult Index()
+        {    
+
             var products = _context.Products.ToList();
-            return View(products);  
+            return View(_mapper.Map<List<ProductViewModel>>(products));  
         }
 
         public IActionResult Remove(int id)
@@ -54,33 +53,88 @@ namespace MyAspNetCoreApp.Web.Controllers
         [HttpGet]
         public IActionResult Add()
         {
+
+           
+
+            ViewBag.Expire = new Dictionary<string, int>()
+            {
+                {"1 Ay", 1 },
+                {"3 Ay", 3 },
+                {"6 Ay", 6 },
+                {"12 Ay", 12 }
+            };
+
+
+            ViewBag.ColorSelect = new SelectList(new List<ColorSelectList>()
+            {
+                new(){ Data = "Mavi", Value = "Mavi"},
+                new(){ Data = "Kırmızı", Value = "Kırmızı"},
+                new(){ Data = "Yeşil", Value = "Yeşil"},
+            }, "Value", "Data");
+
+
+
             return View();
         }
 
         [HttpPost]
 
-        public IActionResult Add(Product newProduct)
+        public IActionResult Add(ProductViewModel newProduct)
         {
+            //if (!string.IsNullOrEmpty(newProduct.Name) && newProduct.Name.StartsWith("A"))
+            //{
+            //    ModelState.AddModelError(String.Empty, "Ürün ismi A harfi ile başlayamaz!");
+            //}
 
 
-            // Request Header-Body
+            ViewBag.Expire = new Dictionary<string, int>()
+            {
+                {"1 Ay", 1 },
+                {"3 Ay", 3 },
+                {"6 Ay", 6 },
+                {"12 Ay", 12 }
+            };
 
 
-            // 1. Yöntem 
+            ViewBag.ColorSelect = new SelectList(new List<ColorSelectList>()
+            {
+                new(){ Data = "Mavi", Value = "Mavi"},
+                new(){ Data = "Kırmızı", Value = "Kırmızı"},
+                new(){ Data = "Yeşil", Value = "Yeşil"},
+            }, "Value", "Data");
 
-            //var name = HttpContext.Request.Form["Name"].ToString();
-            //var price = decimal.Parse(HttpContext.Request.Form["Price"].ToString());
-            //var stock = int.Parse(HttpContext.Request.Form["Stock"].ToString());
-            var color = HttpContext.Request.Form["Color"].ToString();
 
-            // 2. Yöntem
-            //Product newProduct = new Product() { Name = Name, Price = Price, Color = Color, Stock = Stock };
 
-            _context.Products.Add(newProduct);
-            _context.SaveChanges();
+            if (ModelState.IsValid)
+            {
 
-            TempData["status"] = "Ürün Başarıyla Eklendi";
-            return RedirectToAction("Index");
+                try
+                {
+                    //throw new Exception("Db Hatası");
+                    _context.Products.Add(_mapper.Map<Product>(newProduct));
+                    _context.SaveChanges();
+
+                    TempData["status"] = "Ürün Başarıyla Eklendi";
+                    return RedirectToAction("Index");
+                }
+                catch (Exception)
+                {
+                    ModelState.AddModelError(String.Empty, "Ürün kaydedilirken bir hata meydana geldi. Lütfen daha sonra tekrar deneyiniz");
+                    return View();
+                }
+                
+            }
+            else
+            {
+
+            }
+            {
+
+
+
+                return View();
+
+            }
         }
 
 
@@ -100,18 +154,88 @@ namespace MyAspNetCoreApp.Web.Controllers
         [HttpGet]
         public IActionResult Update(int id)
         {
+           
             var product = _context.Products.Find(id);
-            return View(product);
+
+            ViewBag.radioExpireValue = product.Expire;
+            ViewBag.Expire = new Dictionary<string, int>()
+            {
+                {"1 Ay", 1 },
+                {"3 Ay", 3 },
+                {"6 Ay", 6 },
+                {"12 Ay", 12 }
+            };
+
+
+            ViewBag.ColorSelect = new SelectList(new List<ColorSelectList>()
+            {
+                new(){ Data = "Mavi", Value = "Mavi"},
+                new(){ Data = "Kırmızı", Value = "Kırmızı"},
+                new(){ Data = "Yeşil", Value = "Yeşil"},
+            }, "Value", "Data", product.Color);
+
+
+
+
+
+
+
+            return View(_mapper.Map<ProductViewModel>(product));
+
         }
         [HttpPost]
-        public IActionResult Update(Product updateProduct, int productId, string type)
+        public IActionResult Update(ProductViewModel updateProduct)
         {
-           updateProduct.Id = productId;
-            _context.Products.Update(updateProduct);
+
+            if (!ModelState.IsValid)
+            {
+                
+
+                ViewBag.radioExpireValue = updateProduct.Expire;
+                ViewBag.Expire = new Dictionary<string, int>()
+            {
+                {"1 Ay", 1 },
+                {"3 Ay", 3 },
+                {"6 Ay", 6 },
+                {"12 Ay", 12 }
+            };
+
+
+                ViewBag.ColorSelect = new SelectList(new List<ColorSelectList>()
+            {
+                new(){ Data = "Mavi", Value = "Mavi"},
+                new(){ Data = "Kırmızı", Value = "Kırmızı"},
+                new(){ Data = "Yeşil", Value = "Yeşil"},
+            }, "Value", "Data", updateProduct.Color);
+
+
+                return View();
+            }
+
+            _context.Products.Update (_mapper.Map<Product>(updateProduct));
             _context.SaveChanges();
             TempData["status"] = "Ürün Başarıyla Güncellendi";
 
             return RedirectToAction("Index");
+
+          
         }
+
+        [AcceptVerbs("GET", "POST")]
+        public IActionResult HasProductName (string Name)
+        {
+            var anyProduct = _context.Products.Any(x => x.Name.ToLower() == Name.ToLower());
+
+            if (anyProduct)
+            {
+                return Json("Kaydedilmek İstenen Ürün İsmi Veritabanında Bulunmaktadır");
+            }
+
+            else
+            {
+                return Json(true);
+            }
+        }
+
     }
 }

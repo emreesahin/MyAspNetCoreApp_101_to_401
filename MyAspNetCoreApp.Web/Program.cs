@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using MyAspNetCoreApp.Web.Helpers;
 using MyAspNetCoreApp.Web.Models;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,7 +15,8 @@ builder.Services.AddDbContext<AppDbContext>( options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("SqlCon")); 
 });
 
-builder.Services.AddTransient<IHelper, Helper>();
+builder.Services.AddScoped<IHelper, Helper>();
+builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
 var app = builder.Build();
 
@@ -43,4 +45,4 @@ app.Run();
 
 
 
-// Kullanýcýdan Veri Alma Yöntemleri Son 2 Videoda kaldýn 
+// View Component 1. Video
