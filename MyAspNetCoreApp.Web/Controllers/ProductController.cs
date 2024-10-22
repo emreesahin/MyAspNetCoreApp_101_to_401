@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using MyAspNetCoreApp.Web.Filters;
 using MyAspNetCoreApp.Web.Models;
 using MyAspNetCoreApp.Web.ViewModels;
 
 namespace MyAspNetCoreApp.Web.Controllers
 {
+    [Route("[controller]/[action]")]
     public class ProductController : Controller
     {
 
@@ -33,6 +35,7 @@ namespace MyAspNetCoreApp.Web.Controllers
             //}
         }
 
+        [CacheResourceFilter]
         public IActionResult Index()
         {    
 
@@ -40,6 +43,28 @@ namespace MyAspNetCoreApp.Web.Controllers
             return View(_mapper.Map<List<ProductViewModel>>(products));  
         }
 
+        [ServiceFilter(typeof(NotFoundFilter))]
+        [Route("urunler/urun/[action]/{productid}", Name="product")]
+        public IActionResult GetById(int productid)
+        {
+            var product = _context.Products.Find(productid);
+
+            return View(_mapper.Map<ProductViewModel>(product));
+        }
+
+        [Route("[controller]/[action]/{page}/{pageSize}", Name ="productpage")]
+        public IActionResult Pages(int page, int pageSize)
+        {
+            var products = _context.Products.Skip((page - 1) * pageSize ).Take(pageSize).ToList();
+
+            ViewBag.page = page;
+            ViewBag.pageSize = pageSize;
+
+            return View(_mapper.Map<List<ProductViewModel>>(products));
+        }
+
+        [ServiceFilter(typeof(NotFoundFilter))]
+        [HttpGet("{id}")]
         public IActionResult Remove(int id)
         {
             var product = _context.Products.Find(id);
@@ -151,6 +176,7 @@ namespace MyAspNetCoreApp.Web.Controllers
         //}
 
 
+        [ServiceFilter(typeof(NotFoundFilter))]
         [HttpGet]
         public IActionResult Update(int id)
         {

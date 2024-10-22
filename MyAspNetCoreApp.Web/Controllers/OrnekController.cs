@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MyAspNetCoreApp.Web.Filters;
 
 namespace MyAspNetCoreApp.Web.Controllers
 {
@@ -8,6 +9,11 @@ namespace MyAspNetCoreApp.Web.Controllers
         public int Id { get; set; }
         public string Name { get; set; }
     }
+
+
+
+    [CustomResultFilter("x-version","1.0")]
+    [Route("[controller]/[action]")]
     public class OrnekController : Controller
     {
         public IActionResult Index()
