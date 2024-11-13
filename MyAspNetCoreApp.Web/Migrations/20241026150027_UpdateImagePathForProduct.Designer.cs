@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyAspNetCoreApp.Web.Models;
 
@@ -11,9 +12,10 @@ using MyAspNetCoreApp.Web.Models;
 namespace MyAspNetCoreApp.Web.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241026150027_UpdateImagePathForProduct")]
+    partial class UpdateImagePathForProduct
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,23 +24,6 @@ namespace MyAspNetCoreApp.Web.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("MyAspNetCoreApp.Web.Models.Category", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Category");
-                });
-
             modelBuilder.Entity("MyAspNetCoreApp.Web.Models.Product", b =>
                 {
                     b.Property<int>("Id")
@@ -46,9 +31,6 @@ namespace MyAspNetCoreApp.Web.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
 
                     b.Property<string>("Color")
                         .HasColumnType("nvarchar(max)");
@@ -81,8 +63,6 @@ namespace MyAspNetCoreApp.Web.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CategoryId");
-
                     b.ToTable("Products");
                 });
 
@@ -108,22 +88,6 @@ namespace MyAspNetCoreApp.Web.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Visitors");
-                });
-
-            modelBuilder.Entity("MyAspNetCoreApp.Web.Models.Product", b =>
-                {
-                    b.HasOne("MyAspNetCoreApp.Web.Models.Category", "Category")
-                        .WithMany("Products")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Category");
-                });
-
-            modelBuilder.Entity("MyAspNetCoreApp.Web.Models.Category", b =>
-                {
-                    b.Navigation("Products");
                 });
 #pragma warning restore 612, 618
         }

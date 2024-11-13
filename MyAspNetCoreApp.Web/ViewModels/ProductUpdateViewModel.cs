@@ -6,13 +6,14 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MyAspNetCoreApp.Web.ViewModels
 {
-    public class ProductViewModel
+    public class ProductUpdateViewModel
     {
 
         public int Id { get; set; }
 
+        public int CategoryId { get; set; }
 
-        [Remote(action:"HasProductName", controller:"Product")]
+
         [Required(ErrorMessage = "İsim alanı boş bırakılamaz!")]
         [StringLength(50, ErrorMessage = "İsim alanına en fazla 50 karakter girilebilir.")]
         public string? Name { get; set; }
@@ -30,7 +31,7 @@ namespace MyAspNetCoreApp.Web.ViewModels
         [StringLength(300, MinimumLength = 50,  ErrorMessage = "Açıklama alanı en az 50 en fazla 300 karakter girilebilir.")]
         public string? Description { get; set; }
 
-        [Required(ErrorMessage = "Renk seçiniz")]
+        [Required(ErrorMessage = "Renk alanı boş bırakılamaz!")]
         public string? Color { get; set; }
 
         [Required(ErrorMessage = "Yayınlanma Tarihi boş bırakılamaz!")]
@@ -45,15 +46,10 @@ namespace MyAspNetCoreApp.Web.ViewModels
         public IFormFile? Image { get; set; }
 
         [ValidateNever]
-        public string? ImagePath { get; set; }
+        public string ImagePath { get; set; } 
 
-        [Required(ErrorMessage = "Kategori seçiniz")]
-        public int CategoryId { get; set; }
+        
 
-
-        public string? CategoryName  { get; set; }
-
-         
         // E-mail address validation
 
         //[EmailAddress (ErrorMessage = "Email adresi uygun formatta değil")]
