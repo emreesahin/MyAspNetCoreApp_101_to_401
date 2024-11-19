@@ -15,7 +15,9 @@ namespace MyAspNetCoreApp.Web.ViewModels
         [Required(ErrorMessage = "Açıklama alanı boş bırakılamaz!")]
         [StringLength(300, MinimumLength = 50, ErrorMessage = "Açıklama alanı en az 50 en fazla 300 karakter girilebilir.")]
         public string Comment { get; set; }
-        public DateTime Created { get; set; } = DateTime.Now;
+        public DateTime Created { get; set; }
+
+        public string Date => Created.ToShortDateString();
 
     }
 }

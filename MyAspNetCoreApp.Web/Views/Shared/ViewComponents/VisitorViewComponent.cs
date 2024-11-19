@@ -27,6 +27,7 @@ namespace MyAspNetCoreApp.Web.Views.Shared.ViewComponents
 
             return View();
         }
+
     }
 }
 

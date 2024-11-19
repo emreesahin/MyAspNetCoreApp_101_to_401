@@ -80,6 +80,7 @@ namespace MyAspNetCoreApp.Web.Controllers
             return View();
         }
 
+        [HttpPost]
         public IActionResult SaveVisitorComment(VisitorViewModel visitorViewModel)
         {
             try
